@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>نورِ اشعار — Noor-e-Ashaar</title>
+<meta name="description" content="Islamic ashaar for nizamat, taqreer aur mehfil — Urdu, Hindi aur Roman mein.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0F3D3E;
+    --ink-2:#144a4b;
+    --parchment:#FBF6EC;
+    --parchment-2:#F3ECDB;
+    --gold:#C9A227;
+    --gold-soft:#E7D48F;
+    --maroon:#7A2E2E;
+    --text:#1B2C2B;
+    --text-soft:#4B5A59;
+    --card-border:rgba(15,61,62,0.14);
+    --radius:14px;
+    --shadow:0 6px 24px rgba(15,61,62,0.08);
+  }
+  html.dark{
+    --ink:#E7D48F;
+    --parchment:#0B1F1D;
+    --parchment-2:#0F2725;
+    --gold:#D9B94A;
+    --gold-soft:#3a3320;
+    --maroon:#D98A8A;
+    --text:#F3ECDB;
+    --text-soft:#B9C4C2;
+    --card-border:rgba(231,212,143,0.18);
+    --shadow:0 6px 24px rgba(0,0,0,0.35);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--parchment);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    transition:background .3s ease,color .3s ease;
+    padding-bottom:60px;
+  }
+  .script-ur{ font-family:'Noto Nastaliq Urdu',serif; direction:rtl; line-height:2.3; font-size:1.35rem; }
+  .script-hi{ font-family:'Noto Sans Devanagari',sans-serif; direction:ltr; line-height:1.9; font-size:1.08rem; }
+  .script-rm{ font-family:'Lora',serif; direction:ltr; line-height:1.7; font-size:1.05rem; font-style:italic; }
+
+  /* Header */
+  header{
+    position:sticky; top:0; z-index:40;
+    background:linear-gradient(180deg,var(--ink) 0%, var(--ink-2) 100%);
+    color:var(--parchment);
+    padding:14px 16px 10px;
+    box-shadow:0 4px 18px rgba(0,0,0,0.15);
+  }
+  html.dark header{ background:linear-gradient(180deg,#081615,#0a1e1c); }
+  .brand-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  .brand{ display:flex; align-items:center; gap:10px; }
+  .arch-icon{ width:30px; height:30px; flex-shrink:0; }
+  .brand h1{
+    margin:0; font-family:'Noto Nastaliq Urdu',serif; font-size:1.5rem; color:var(--gold-soft); line-height:1;
+  }
+  .brand .sub{ font-family:'Lora',serif; font-size:0.68rem; letter-spacing:.14em; text-transform:uppercase; color:var(--parchment-2); opacity:.75; }
+  .header-actions{ display:flex; gap:8px; align-items:center; }
+  .icon-btn{
+    background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.18);
+    color:var(--parchment); border-radius:10px; padding:7px 10px; cursor:pointer; font-size:0.85rem;
+    transition:.2s;
+  }
+  .icon-btn:hover{ background:rgba(255,255,255,0.16); }
+  .script-toggle{ display:flex; gap:4px; background:rgba(0,0,0,0.18); border-radius:10px; padding:3px; margin-top:12px; }
+  .script-toggle button{
+    flex:1; border:none; background:transparent; color:var(--parchment-2); padding:8px 6px; border-radius:8px;
+    cursor:pointer; font-size:0.82rem; font-weight:600; transition:.2s;
+  }
+  .script-toggle button.active{ background:var(--gold); color:var(--ink); }
+  .search-row{ margin-top:10px; position:relative; }
+  .search-row input{
+    width:100%; padding:11px 14px; border-radius:10px; border:1px solid rgba(255,255,255,0.2);
+    background:rgba(255,255,255,0.08); color:var(--parchment); font-size:0.95rem; font-family:'Inter',sans-serif;
+  }
+  .search-row input::placeholder{ color:rgba(243,236,219,0.55); }
+  .search-row input:focus{ outline:2px solid var(--gold); outline-offset:1px; }
+
+  /* filter bar */
+  .filters{ padding:14px 16px 4px; }
+  .filter-group-title{ font-size:0.72rem; text-transform:uppercase; letter-spacing:.1em; color:var(--text-soft); margin:14px 0 8px; }
+  .chip-row{ display:flex; flex-wrap:wrap; gap:8px; }
+  .chip{
+    border:1px solid var(--card-border); background:var(--parchment-2); color:var(--text);
+    padding:7px 13px; border-radius:999px; font-size:0.83rem; cursor:pointer; transition:.15s; white-space:nowrap;
+  }
+  .chip:hover{ border-color:var(--gold); }
+  .chip.active{ background:var(--ink); color:var(--gold-soft); border-color:var(--ink); }
+
+  /* divider ornament */
+  .ornament{ display:flex; align-items:center; justify-content:center; margin:18px 0 6px; opacity:.55; }
+  .ornament svg{ width:120px; height:16px; }
+
+  /* grid */
+  main{ padding:6px 16px 20px; max-width:760px; margin:0 auto; }
+  .count-row{ font-size:0.82rem; color:var(--text-soft); margin:10px 2px 14px; }
+  .grid{ display:flex; flex-direction:column; gap:14px; }
+  .card{
+    background:var(--parchment-2); border:1px solid var(--card-border); border-radius:var(--radius);
+    padding:18px 18px 14px; box-shadow:var(--shadow); position:relative; overflow:hidden;
+  }
+  .card::before{
+    content:""; position:absolute; top:0; left:0; right:0; height:3px;
+    background:linear-gradient(90deg,var(--gold),transparent 70%);
+  }
+  .card-tags{ display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px; }
+  .tag{
+    font-size:0.68rem; padding:3px 9px; border-radius:999px; background:rgba(201,162,39,0.14);
+    color:var(--maroon); font-family:'Inter',sans-serif; font-weight:600; letter-spacing:.02em;
+  }
+  .sher-text{ margin:6px 0 10px; color:var(--text); white-space:pre-line; }
+  .card-footer{ display:flex; align-items:center; justify-content:space-between; margin-top:8px; }
+  .shayar{ font-size:0.78rem; color:var(--text-soft); font-style:italic; }
+  .card-actions{ display:flex; gap:6px; }
+  .card-actions button{
+    background:none; border:1px solid var(--card-border); border-radius:8px; padding:6px 8px;
+    cursor:pointer; font-size:0.9rem; color:var(--text-soft); transition:.15s;
+  }
+  .card-actions button:hover{ border-color:var(--gold); color:var(--maroon); }
+  .card-actions button.fav-active{ color:var(--maroon); border-color:var(--maroon); }
+  .empty-state{ text-align:center; padding:50px 20px; color:var(--text-soft); }
+
+  /* monetization slots */
+  .ad-slot{
+    margin:18px 2px; padding:14px; border:1px dashed var(--card-border); border-radius:10px;
+    text-align:center; font-size:0.75rem; color:var(--text-soft); background:var(--parchment-2);
+  }
+  .donate-banner{
+    margin:20px 2px; padding:18px; border-radius:var(--radius); background:linear-gradient(120deg,var(--ink),var(--ink-2));
+    color:var(--parchment); text-align:center;
+  }
+  .donate-banner h3{ margin:0 0 6px; font-family:'Noto Nastaliq Urdu',serif; color:var(--gold-soft); font-size:1.2rem; }
+  .donate-banner p{ margin:0 0 12px; font-size:0.85rem; opacity:.85; }
+  .donate-banner a, .donate-banner button{
+    display:inline-block; background:var(--gold); color:var(--ink); padding:9px 20px; border-radius:999px;
+    text-decoration:none; font-weight:700; font-size:0.85rem; border:none; cursor:pointer;
+  }
+
+  /* footer */
+  footer{ text-align:center; padding:26px 16px; font-size:0.75rem; color:var(--text-soft); }
+  footer button{ background:none; border:none; color:var(--text-soft); text-decoration:underline; cursor:pointer; font-size:0.75rem; }
+
+  /* admin modal */
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(11,31,29,0.55); display:none; align-items:flex-start; justify-content:center;
+    z-index:100; padding:20px 12px; overflow-y:auto;
+  }
+  .modal-overlay.open{ display:flex; }
+  .modal{
+    background:var(--parchment); border-radius:16px; max-width:520px; width:100%; padding:20px; margin-top:20px;
+    box-shadow:0 20px 60px rgba(0,0,0,0.3);
+  }
+  .modal h2{ font-family:'Noto Nastaliq Urdu',serif; color:var(--ink); margin-top:0; }
+  .modal label{ display:block; font-size:0.78rem; color:var(--text-soft); margin:12px 0 4px; font-weight:600; }
+  .modal input, .modal textarea, .modal select{
+    width:100%; padding:9px 11px; border-radius:8px; border:1px solid var(--card-border); font-size:0.92rem;
+    font-family:'Inter',sans-serif; background:var(--parchment-2); color:var(--text);
+  }
+  .modal textarea{ min-height:60px; resize:vertical; }
+  .modal-row{ display:flex; gap:10px; margin-top:16px; flex-wrap:wrap; }
+  .btn-primary{ background:var(--ink); color:var(--gold-soft); border:none; padding:10px 18px; border-radius:9px; cursor:pointer; font-weight:600; }
+  .btn-secondary{ background:transparent; border:1px solid var(--card-border); padding:10px 18px; border-radius:9px; cursor:pointer; color:var(--text); }
+  .btn-danger{ background:transparent; border:1px solid var(--maroon); color:var(--maroon); padding:6px 10px; border-radius:8px; cursor:pointer; font-size:0.78rem; }
+  .close-x{ position:absolute; top:14px; right:16px; background:none; border:none; font-size:1.3rem; cursor:pointer; color:var(--text-soft); }
+  .admin-list{ margin-top:16px; max-height:280px; overflow-y:auto; border-top:1px solid var(--card-border); }
+  .admin-list-item{ display:flex; justify-content:space-between; align-items:center; padding:10px 2px; border-bottom:1px solid var(--card-border); gap:8px; }
+  .admin-list-item span{ font-size:0.85rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .checkgrid{ display:flex; flex-wrap:wrap; gap:8px; margin-top:6px; }
+  .checkgrid label{ display:flex; align-items:center; gap:5px; font-weight:400; font-size:0.8rem; margin:0;
+    background:var(--parchment-2); padding:5px 9px; border-radius:8px; border:1px solid var(--card-border); }
+  .checkgrid input{ width:auto; }
+  .toast{
+    position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:var(--ink); color:var(--gold-soft);
+    padding:10px 20px; border-radius:999px; font-size:0.85rem; z-index:200; opacity:0; pointer-events:none; transition:.3s;
+  }
+  .toast.show{ opacity:1; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand-row">
+    <div class="brand">
+      <svg class="arch-icon" viewBox="0 0 40 40" fill="none"><path d="M4 36V20C4 10.6 11.2 4 20 4C28.8 4 36 10.6 36 20V36" stroke="#E7D48F" stroke-width="2.5"/><path d="M4 36H36" stroke="#E7D48F" stroke-width="2.5"/><circle cx="20" cy="16" r="3" fill="#E7D48F"/></svg>
+      <div>
+        <h1>نورِ اشعار</h1>
+        <div class="sub">Noor-e-Ashaar</div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" id="themeToggle" title="Dark/Light">🌙</button>
+      <button class="icon-btn" id="suggestOpenBtn">✉ Sujhaav</button>
+      <button class="icon-btn" id="adminOpenBtn">Admin</button>
+    </div>
+  </div>
+
+  <div class="script-toggle" id="scriptToggle">
+    <button data-script="ur" class="active">اردو</button>
+    <button data-script="hi">हिंदी</button>
+    <button data-script="rm">Roman</button>
+  </div>
+
+  <div class="search-row">
+    <input type="text" id="searchInput" placeholder="Sher, shayar ya mauzu talash karein...">
+  </div>
+</header>
+
+<div class="filters">
+  <div class="chip-row" id="mainChips">
+    <button class="chip active" data-filter="all">Sab</button>
+    <button class="chip" data-filter="fav">★ Favorites</button>
+    <button class="chip" data-cat="naat">Naat</button>
+    <button class="chip" data-cat="manqabat">Manqabat</button>
+    <button class="chip" data-cat="milad">Milad</button>
+    <button class="chip" data-cat="hamd">Hamd</button>
+  </div>
+
+  <div class="filter-group-title">نظامت کے اشعار — Nizamat</div>
+  <div class="chip-row" id="nizamatChips"></div>
+
+  <div class="filter-group-title">تقریر کے موضوع — Taqreer Mauzu</div>
+  <div class="chip-row" id="taqreerChips"></div>
+</div>
+
+<div class="ornament">
+  <svg viewBox="0 0 120 16"><path d="M0 8 H45 M75 8 H120" stroke="#C9A227" stroke-width="1"/><circle cx="60" cy="8" r="4" fill="none" stroke="#C9A227" stroke-width="1"/><circle cx="60" cy="8" r="1.5" fill="#C9A227"/></svg>
+</div>
+
+<main>
+  <div class="count-row" id="countRow"></div>
+  <div class="grid" id="grid"></div>
+  <div class="ad-slot" id="adSlot1">Advertisement space (Google AdSense yahan lagega)</div>
+
+  <div class="donate-banner">
+    <h3>صدقہ جاریہ</h3>
+    <p>Agar ye ashaar aapki taqreer aur nizamat mein kaam aaye, to Noor-e-Ashaar ko jaari rakhne mein hamara saath dein.</p>
+    <button id="donateBtn">Sadaqah Dein</button>
+  </div>
+</main>
+
+<footer>
+  Noor-e-Ashaar &copy; <span id="year"></span> — tayyar kiya gaya deen ki khidmat ke liye.
+  <br><button id="exportBtn2">Data export</button>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<!-- Suggestion / Islah Modal -->
+<div class="modal-overlay" id="suggestOverlay">
+  <div class="modal">
+    <button class="close-x" id="suggestCloseBtn">✕</button>
+    <h2>مشورہ / اصلاح / نیا شعر</h2>
+    <p style="font-size:0.85rem;color:var(--text-soft);margin-top:-8px;">Agar koi sujhaav dena hai, kisi ghalti ki islah karni hai, ya naya sher share karna hai — yahan likhein. Seedha hum tak pahunch jayega.</p>
+
+    <label>Aapka naam (optional)</label>
+    <input type="text" id="sg_name" placeholder="Naam">
+
+    <label>Ye kis tarah ka paigham hai?</label>
+    <select id="sg_type">
+      <option value="Sujhaav">Sujhaav (Suggestion)</option>
+      <option value="Islah">Islah (Correction)</option>
+      <option value="Naya Sher">Naya Sher (New Ashaar)</option>
+      <option value="Doosra">Kuch Aur</option>
+    </select>
+
+    <label>Apna paigham / sher yahan likhein</label>
+    <textarea id="sg_message" style="min-height:110px;" placeholder="Yahan likhein..."></textarea>
+
+    <label>Aapka email/WhatsApp (optional, jawab dene ke liye)</label>
+    <input type="text" id="sg_contact" placeholder="Email ya number">
+
+    <div class="modal-row">
+      <button class="btn-primary" id="sendSuggestBtn">Bhej Dein</button>
+    </div>
+    <p style="font-size:0.72rem;color:var(--text-soft);margin-top:14px;">Ye button aapki mail app kholega, jahan paigham pehle se likha hoga — bas "Send" dabana hai.</p>
+  </div>
+</div>
+
+<!-- Admin Modal -->
+<div class="modal-overlay" id="adminOverlay">
+  <div class="modal">
+    <button class="close-x" id="adminCloseBtn">✕</button>
+    <div id="adminGate">
+      <h2>Admin Login</h2>
+      <label>Password</label>
+      <input type="password" id="adminPass" placeholder="Password daaliye">
+      <div class="modal-row"><button class="btn-primary" id="adminLoginBtn">Login</button></div>
+    </div>
+    <div id="adminPanel" style="display:none;">
+      <h2>Naya Sher Add Karein</h2>
+      <label>Urdu</label>
+      <textarea id="f_urdu" dir="rtl" placeholder="شعر یہاں لکھیں"></textarea>
+      <label>Hindi</label>
+      <textarea id="f_hindi" placeholder="शेर यहाँ लिखें"></textarea>
+      <label>Roman</label>
+      <textarea id="f_roman" placeholder="Sher yahan likhein"></textarea>
+      <label>Shayar ka naam</label>
+      <input type="text" id="f_shayar" placeholder="Shayar ka naam (optional)">
+      <label>Categories</label>
+      <div class="checkgrid" id="f_categories"></div>
+      <div class="modal-row">
+        <button class="btn-primary" id="saveShaerBtn">Save Sher</button>
+        <button class="btn-secondary" id="cancelEditBtn" style="display:none;">Cancel Edit</button>
+      </div>
+
+      <div class="modal-row" style="margin-top:20px;">
+        <button class="btn-secondary" id="exportBtn">⬇ Export JSON</button>
+        <label class="btn-secondary" style="cursor:pointer;">⬆ Import JSON<input type="file" id="importFile" accept=".json" style="display:none;"></label>
+      </div>
+
+      <h2 style="margin-top:22px;">Maujooda Ashaar (<span id="adminCount"></span>)</h2>
+      <div class="admin-list" id="adminList"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ---------- Storage (localStorage with in-memory fallback) ---------- */
+const memStore = {};
+const storage = {
+  get(key, fallback){
+    try{
+      const v = localStorage.getItem(key);
+      return v !== null ? JSON.parse(v) : (memStore[key] !== undefined ? memStore[key] : fallback);
+    }catch(e){ return memStore[key] !== undefined ? memStore[key] : fallback; }
+  },
+  set(key, val){
+    memStore[key] = val;
+    try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){ /* ignore, memory fallback active */ }
+  }
+};
+
+/* ---------- Category definitions ---------- */
+const NIZAMAT_CATS = [
+  {id:'niz-isteqbaliya', ur:'استقبالیہ', hi:'इस्तिक़बालिया', rm:'Isteqbaliya'},
+  {id:'niz-sana', ur:'ثنا سے پہلے', hi:'सना से पहले', rm:'Sana se Pehle'},
+  {id:'niz-dua', ur:'دعا سے پہلے', hi:'दुआ से पहले', rm:'Dua se Pehle'},
+  {id:'niz-khatm', ur:'ختمِ جلسہ', hi:'ख़त्म-ए-जलसा', rm:'Khatm-e-Jalsa'},
+  {id:'niz-general', ur:'عمومی نظامت', hi:'आम नियामत', rm:'General Nizamat'},
+];
+const TAQREER_CATS = [
+  {id:'tq-karbala', ur:'کربلا و شہادتِ امام حسینؓ', hi:'कर्बला व शहादत-ए-इमाम हुसैन', rm:'Karbala o Shahadat-e-Imam Hussain'},
+  {id:'tq-ishqerasool', ur:'عشقِ رسول ﷺ', hi:'इश्क़-ए-रसूल ﷺ', rm:'Ishq-e-Rasool ﷺ'},
+  {id:'tq-tawheed', ur:'توحید و رسالت', hi:'तौहीद व रिसालत', rm:'Tawheed o Risalat'},
+  {id:'tq-ahlebait', ur:'عشقِ اہلِ بیتؓ', hi:'इश्क़-ए-अहल-ए-बैत', rm:'Ishq-e-Ahl-e-Bait'},
+  {id:'tq-milad', ur:'میلادالنبی ﷺ', hi:'मिलाद-उन-नबी ﷺ', rm:'Milad-un-Nabi'},
+  {id:'tq-sahaba', ur:'صحابہ و اہلِ سنت', hi:'सहाबा व अहल-ए-सुन्नत', rm:'Sahaba o Ahle Sunnat'},
+  {id:'tq-maut', ur:'موت و آخرت (عبرت)', hi:'मौत व आख़िरत (इब्रत)', rm:'Maut o Aakhirat (Ibrat)'},
+  {id:'tq-dawat', ur:'دینی دعوت و اصلاح', hi:'दीनी दावत व इस्लाह', rm:'Deen ki Dawat/Islah'},
+];
+const GENERAL_CATS = [
+  {id:'naat', rm:'Naat'}, {id:'manqabat', rm:'Manqabat'}, {id:'milad', rm:'Milad'}, {id:'hamd', rm:'Hamd'}
+];
+const ALL_CATS = [...NIZAMAT_CATS, ...TAQREER_CATS, ...GENERAL_CATS];
+function catLabel(id, script){
+  const c = ALL_CATS.find(c=>c.id===id);
+  if(!c) return id;
+  if(script==='ur') return c.ur || c.rm;
+  if(script==='hi') return c.hi || c.rm;
+  return c.rm;
+}
+
+/* ---------- Sample seed data ---------- */
+const SEED_DATA = [
+  {id:'s1', urdu:'آ گئے ہیں دیکھو نبیوں کے سردار، مرحبا صد مرحبا', hindi:'आ गए हैं देखो नबियों के सरदार, मरहबा सद मरहबा', roman:'Aa gaye hain dekho nabiyon ke sardar, marhaba sad marhaba', shayar:'', categories:['niz-isteqbaliya','naat']},
+  {id:'s2', urdu:'خاموش ہو جاؤ کہ ثنا کا وقت آیا، رب کی ثنا میں دل لگاؤ', hindi:'ख़ामोश हो जाओ कि सना का वक़्त आया, रब की सना में दिल लगाओ', roman:'Khamosh ho jao ke sana ka waqt aaya, Rab ki sana mein dil lagao', shayar:'', categories:['niz-sana','hamd']},
+  {id:'s3', urdu:'اٹھو کہ دستِ دعا بلند ہو، ہر آنکھ اشکبار ہو', hindi:'उठो कि दस्त-ए-दुआ बुलंद हो, हर आँख अश्कबार हो', roman:'Utho ke dast-e-dua buland ho, har aankh ashkbaar ho', shayar:'', categories:['niz-dua']},
+  {id:'s4', urdu:'اجازت دیجیے اب مجلس کو ختم کریں، دعاؤں میں یاد رکھیے گا', hindi:'इजाज़त दीजिए अब मजलिस को ख़त्म करें, दुआओं में याद रखिएगा', roman:'Ijazat dijiye ab majlis ko khatm karein, duaon mein yaad rakhiyega', shayar:'', categories:['niz-khatm']},
+  {id:'s5', urdu:'پیاسا رہ گیا دریائے فرات کے کنارے، حسینؓ کا لہو رنگ لایا', hindi:'प्यासा रह गया दरिया-ए-फ़ुरात के किनारे, हुसैन का लहू रंग लाया', roman:'Pyaasa reh gaya dariya-e-Furat ke kinare, Hussain ka lahu rang laya', shayar:'', categories:['tq-karbala','manqabat']},
+  {id:'s6', urdu:'کربلا میں دیکھا جو حسینؓ کا صبر، ہر آنکھ اشکبار ہوئی', hindi:'कर्बला में देखा जो हुसैन का सब्र, हर आँख अश्कबार हुई', roman:'Karbala mein dekha jo Hussain ka sabr, har aankh ashkbaar hui', shayar:'', categories:['tq-karbala']},
+  {id:'s7', urdu:'محمدﷺ کا نام آتے ہی دل کو قرار آتا ہے', hindi:'मुहम्मद ﷺ का नाम आते ही दिल को क़रार आता है', roman:'Muhammad ﷺ ka naam aate hi dil ko qarar aata hai', shayar:'', categories:['tq-ishqerasool','naat']},
+  {id:'s8', urdu:'وحدہٗ لا شریک ہے وہ رب، اسی کے آگے جھکتے ہیں ہم', hindi:'वहदहु ला शरीक है वो रब, उसी के आगे झुकते हैं हम', roman:'Wahdahu la shareek hai woh Rab, usi ke aage jhukte hain hum', shayar:'', categories:['tq-tawheed','hamd']},
+  {id:'s9', urdu:'اہلِ بیتؓ کی محبت ایمان کا حصہ ہے، یہ سکھایا ہمیں نبیﷺ نے', hindi:'अहल-ए-बैत की मोहब्बत ईमान का हिस्सा है, ये सिखाया हमें नबी ﷺ ने', roman:'Ahl-e-Bait ki mohabbat imaan ka hissa hai, ye sikhaya hamein Nabi ﷺ ne', shayar:'', categories:['tq-ahlebait','manqabat']},
+  {id:'s10', urdu:'ربیع الاول کی بہاریں لے کر آیا میلاد کا مہینہ', hindi:'रबी-उल-अव्वल की बहारें लेकर आया मिलाद का महीना', roman:'Rabi-ul-Awwal ki baharein lekar aaya milad ka mahina', shayar:'', categories:['tq-milad','milad']},
+  {id:'s11', urdu:'صحابہؓ کا کردار ہے ہمارے لیے مشعلِ راہ', hindi:'सहाबा का किरदार है हमारे लिए मशाल-ए-राह', roman:'Sahaba ka kirdar hai hamare liye mashal-e-raah', shayar:'', categories:['tq-sahaba']},
+  {id:'s12', urdu:'موت ہے برحق، یاد رکھو اے غافل انسان', hindi:'मौत है बरहक़, याद रखो ऐ ग़ाफ़िल इंसान', roman:'Maut hai barhaq, yaad rakho ae ghafil insan', shayar:'', categories:['tq-maut']},
+  {id:'s13', urdu:'دین کی دعوت دو، یہی ہے سنتِ انبیاء', hindi:'दीन की दावत दो, यही है सुन्नत-ए-अंबिया', roman:'Deen ki dawat do, yahi hai sunnat-e-ambiya', shayar:'', categories:['tq-dawat']},
+  {id:'s14', urdu:'مدینے کی گلیوں کی بات ہی نرالی ہے', hindi:'मदीने की गलियों की बात ही निराली है', roman:'Madine ki galiyon ki baat hi nirali hai', shayar:'', categories:['naat']},
+  {id:'s15', urdu:'اللہ کی حمد بیان کروں تو زبان تھک جائے', hindi:'अल्लाह की हम्द बयान करूँ तो ज़बान थक जाए', roman:'Allah ki hamd bayan karun to zabaan thak jaaye', shayar:'', categories:['hamd']},
+  {id:'s16', urdu:'جب تیری بات کان پڑتی ہے\nتانے بجا میں جان پڑتی ہے\nفاصلہ کچھ نہیں تیرے در تک\nزندگی درمیان پڑتی ہے', hindi:'जब तेरी बात कान पड़ती है\nताने बजा में जान पड़ती है\nफ़ासला कुछ नहीं तेरे दर तक\nज़िंदगी दरमियान पड़ती है', roman:'Jab Teri baat kan padti hai\nTane be jaa me jan padti hai\nFasla kuch nahi tere dar tak\nZindagi darmiyan padti hai.', shayar:'Pir Nasiruddin Naseer', categories:['naat','tq-ishqerasool']},
+  {id:'s17', urdu:'تیرا حسن میری نگاہ میں بخدا خدا کی کتاب ہے\nتیری بندگی تو الگ رہی تجھے دیکھنا بھی ثواب ہے', hindi:'तेरा हुस्न मेरी निगाह में बख़ुदा ख़ुदा की किताब है\nतेरी बंदगी तो अलग रही तुझे देखना भी सवाब है', roman:'Tera husn meri nigah mein b-khuda khuda ki kitab hai\nTeri bandagi to alag Rahi tujhe dekhna bhi sawab hai', shayar:'', categories:['naat']},
+  {id:'s18', urdu:'بے خبر ہو جو غلاموں سے وہ آقا کیا ہے\nبندہ مٹ جائے نہ آقا پہ وہ بندہ کیا ہے', hindi:'बे-ख़बर हो जो ग़ुलामों से वो आक़ा क्या है\nबंदा मिट जाए न आक़ा पे वो बंदा क्या है', roman:'Be khabar hojo gulamo se vo aaqa kya hai\nBanda mit jaye na aaqa pe vo Banda kya hai', shayar:'', categories:['naat']},
+  {id:'s19', urdu:'تمنائے دلِ اشرف بس اتنی ہے سرِ کوثر\nجب آقا جامِ کوثر دے لبِ اقدس لگا کر دے', hindi:'तमन्ना-ए-दिल-ए-अश्रफ़ बस इतनी है सर-ए-कौसर\nजब आक़ा जाम-ए-कौसर दे लब-ए-अक़दस लगा कर दे', roman:'Tamanna E Dil E Ashraf Bas itni Hai Sar E Kaushar\nJab Aaqa Jaam E Koushar De Lab E Aqdas Laga Kar De', shayar:'', categories:['naat','tq-ishqerasool']},
+  {id:'s20', urdu:'اونچے اونچے درباروں سے کیا لینا\nننگے بھوکے بے چاروں سے کیا لینا\nاپنا خالق اپنا مالک افضل ہے\nآتی جاتی سرکاروں سے کیا لینا', hindi:'ऊंचे ऊंचे दरबारों से क्या लेना,\nनंगे भूखे बेचारों से क्या लेना,\nअपना खालिक अपना मालिक अफजल है\nआती जाती सरकारों से क्या लेना.', roman:'Ooche ooche darbaron se kya lena,\nNange bhookhe bechaaron se kya lena,\nApna khaliq apna maalik afzal hai\nAati jaati sarkaron se kya lena.', shayar:'', categories:['hamd']},
+  {id:'s21', urdu:'نہ دولت سے، نہ دنیا سے، نہ گھر آباد کرنے سے\nتسلی دل کو ملتی ہے خدا کو یاد کرنے سے', hindi:'न दौलत से, न दुनिया से, न घर आबाद करने से,\nतसल्ली दिल को मिलती है खुदा को याद करने से.', roman:'Na daulat se, na duniya se, na ghar aabaad karne se,\nTasalli dil ko milti hai khuda ko yaad karne se.', shayar:'', categories:['hamd']},
+  {id:'s22', urdu:'میری قسمت میں بھی ایسا کوئی سجدہ کر دے\nجو میرے سارے گناہوں کا مداوا کر دے\nساری دنیا سے چھپا کر مجھے اپنا کر دے\nمیری مٹی کو خدایا تو سونا کر دے\nمیں تیرا چاہنے والا ہوں مگر ہے حسرت\nجن کو تو چاہتا ہے مجھ کو بھی ویسا کر دے\nاک نظر اپنے گنہگار پر کر مولا\nاپنی رحمت کا تو حقدار ہمیشہ کر دے', hindi:'मेरी किस्मत में भी ऐसा कोई सजदा कर दे\nजो मेरे सारे गुनाहों का मदावा कर दे.\nसारी दुनिया से छुपाकर मुझे अपना कर दे.\nमेरी मिट्टी को खुदाया तू सोना कर दे.\nमैं तेरा चाहने वाला हूं मगर है हसरत\nजिनको तू चाहता है मुझको भी वैसा कर दे.\nएक नज़र अपने गुनहगार पर कर मौला\nअपनी रहमत का तु हकदार हमेशा कर दे.', roman:'Meri kismat mein bhi aisa koi sajda kar de\nJo mere saare gunahon ka mudaawa kar de.\nSaari duniya se chhupakar mujhe apna kar de.\nMeri mitti ko khudaya tu sona kar de.\nMain tera chaahne wala hoon magar hai hasrat\nJinko tu chahta hai mujhko bhi waisa kar de.\nEk nazar apne gunahgar par kar Maula\nApni rahmat ka tu haqdar hamesha kar de.', shayar:'', categories:['hamd']},
+  {id:'s23', urdu:'آ رہی ہے آسماں سے یہ صدا تیرے لیے\nتو خدا کے واسطے ہے اور خدا تیرے لیے\nتیری ہر اک سانس پر اس کا بڑا احسان ہے\nوہ چلاتا ہے تو چلتی ہے ہوا تیرے لیے', hindi:'आ रही है आसमा से ये सदा तेरे लिए.\nतू खुदा के वास्ते हैं और खुदा तेरे लिए.\nतेरी हर एक सांस पर उसका बड़ा एहसान है.\nवो चलाता है तो चलती है हवा तेरे लिए.', roman:'Aa rahi hai aasma se ye sada tere liye.\nTu khuda ke waaste hai aur khuda tere liye.\nTeri har ek saans par uska bada ehsaan hai.\nWo chalata hai to chalti hai hawa tere liye.', shayar:'', categories:['hamd']},
+];
+
+/* ---------- App state ---------- */
+const DATA_VERSION = 2; // increment this every time new ashaar are added to SEED_DATA
+let storedVersion = storage.get('noorDataVersion', 0);
+let ashaarData = storage.get('noorAshaarDB', null);
+if(!ashaarData){
+  ashaarData = SEED_DATA;
+} else if(storedVersion < DATA_VERSION){
+  const existingIds = new Set(ashaarData.map(i=>i.id));
+  SEED_DATA.forEach(seedItem=>{
+    if(!existingIds.has(seedItem.id)) ashaarData.push(seedItem);
+  });
+}
+storage.set('noorAshaarDB', ashaarData);
+storage.set('noorDataVersion', DATA_VERSION);
+let favorites = storage.get('noorFavorites', []);
+let currentScript = storage.get('noorScript', 'ur');
+let activeFilters = new Set(['all']);
+let searchTerm = '';
+let editingId = null;
+const ADMIN_PASSWORD = 'noor786';
+let isAdmin = false;
+
+/* ---------- Render filter chips ---------- */
+function renderChipGroup(container, cats){
+  container.innerHTML = '';
+  cats.forEach(c=>{
+    const btn = document.createElement('button');
+    btn.className = 'chip';
+    btn.dataset.cat = c.id;
+    btn.textContent = catLabel(c.id, currentScript);
+    btn.addEventListener('click', ()=>toggleCatFilter(c.id));
+    container.appendChild(btn);
+  });
+}
+function toggleCatFilter(catId){
+  activeFilters.delete('all'); activeFilters.delete('fav');
+  if(activeFilters.has(catId)) activeFilters.delete(catId); else activeFilters.add(catId);
+  if(activeFilters.size===0) activeFilters.add('all');
+  syncChipUI();
+  render();
+}
+function syncChipUI(){
+  document.querySelectorAll('.chip').forEach(chip=>{
+    const cat = chip.dataset.cat, filt = chip.dataset.filter;
+    if(filt) chip.classList.toggle('active', activeFilters.has(filt));
+    if(cat) chip.classList.toggle('active', activeFilters.has(cat));
+  });
+}
+
+document.getElementById('mainChips').querySelectorAll('.chip').forEach(chip=>{
+  chip.addEventListener('click', ()=>{
+    const filt = chip.dataset.filter, cat = chip.dataset.cat;
+    if(filt){ activeFilters = new Set([filt]); }
+    else if(cat){ activeFilters.delete('all'); activeFilters.delete('fav'); 
+      if(activeFilters.has(cat)) activeFilters.delete(cat); else activeFilters.add(cat);
+      if(activeFilters.size===0) activeFilters.add('all');
+    }
+    syncChipUI(); render();
+  });
+});
+
+/* ---------- Rendering ashaar ---------- */
+function textFor(item){
+  if(currentScript==='ur') return item.urdu;
+  if(currentScript==='hi') return item.hindi;
+  return item.roman;
+}
+function classFor(){ return currentScript==='ur' ? 'script-ur' : currentScript==='hi' ? 'script-hi' : 'script-rm'; }
+
+function matchesFilter(item){
+  if(activeFilters.has('all')) return true;
+  if(activeFilters.has('fav')) return favorites.includes(item.id);
+  return item.categories.some(c=>activeFilters.has(c));
+}
+function matchesSearch(item){
+  if(!searchTerm) return true;
+  const t = searchTerm.toLowerCase();
+  return (item.urdu||'').toLowerCase().includes(t) ||
+         (item.hindi||'').toLowerCase().includes(t) ||
+         (item.roman||'').toLowerCase().includes(t) ||
+         (item.shayar||'').toLowerCase().includes(t) ||
+         item.categories.some(c=>catLabel(c,'rm').toLowerCase().includes(t));
+}
+
+function render(){
+  const grid = document.getElementById('grid');
+  const filtered = ashaarData.filter(i=>matchesFilter(i) && matchesSearch(i));
+  document.getElementById('countRow').textContent = filtered.length + ' ashaar mile';
+  grid.innerHTML = '';
+  if(filtered.length===0){
+    grid.innerHTML = '<div class="empty-state">Koi sher nahi mila. Filter badal kar dekhein.</div>';
+    return;
+  }
+  filtered.forEach(item=>{
+    const card = document.createElement('div'); card.className='card';
+    const tagsHtml = item.categories.map(c=>`<span class="tag">${catLabel(c,currentScript)}</span>`).join('');
+    const isFav = favorites.includes(item.id);
+    card.innerHTML = `
+      <div class="card-tags">${tagsHtml}</div>
+      <div class="sher-text ${classFor()}">${textFor(item)}</div>
+      <div class="card-footer">
+        <div class="shayar">${item.shayar ? '— '+item.shayar : ''}</div>
+        <div class="card-actions">
+          <button class="copyBtn" title="Copy">⧉</button>
+          <button class="shareBtn" title="Share">📤</button>
+          <button class="favBtn ${isFav?'fav-active':''}" title="Favorite">${isFav?'★':'☆'}</button>
+        </div>
+      </div>`;
+    card.querySelector('.copyBtn').addEventListener('click', ()=>{
+      navigator.clipboard.writeText(textFor(item)).then(()=>showToast('Copy ho gaya'));
+    });
+    card.querySelector('.shareBtn').addEventListener('click', async ()=>{
+      const shareText = textFor(item) + (item.shayar ? '\n— ' + item.shayar : '') + '\n\nNoor-e-Ashaar 🌙';
+      if(navigator.share){
+        try{ await navigator.share({ text: shareText }); }
+        catch(e){ /* user cancelled share, ignore */ }
+      } else {
+        const waUrl = 'https://wa.me/?text=' + encodeURIComponent(shareText);
+        window.open(waUrl, '_blank');
+      }
+    });
+    card.querySelector('.favBtn').addEventListener('click', (e)=>{
+      if(favorites.includes(item.id)) favorites = favorites.filter(f=>f!==item.id);
+      else favorites.push(item.id);
+      storage.set('noorFavorites', favorites);
+      render();
+    });
+    grid.appendChild(card);
+  });
+}
+
+/* ---------- Script toggle ---------- */
+document.getElementById('scriptToggle').querySelectorAll('button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    currentScript = btn.dataset.script;
+    storage.set('noorScript', currentScript);
+    document.getElementById('scriptToggle').querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.documentElement.setAttribute('lang', currentScript==='ur'?'ur':currentScript==='hi'?'hi':'en');
+    renderChipGroup(document.getElementById('nizamatChips'), NIZAMAT_CATS);
+    renderChipGroup(document.getElementById('taqreerChips'), TAQREER_CATS);
+    syncChipUI();
+    render();
+  });
+});
+
+/* ---------- Theme toggle ---------- */
+function applyTheme(dark){
+  document.documentElement.classList.toggle('dark', dark);
+  document.getElementById('themeToggle').textContent = dark ? '☀️' : '🌙';
+  storage.set('noorDark', dark);
+}
+applyTheme(storage.get('noorDark', false));
+document.getElementById('themeToggle').addEventListener('click', ()=>{
+  applyTheme(!document.documentElement.classList.contains('dark'));
+});
+
+/* ---------- Search ---------- */
+document.getElementById('searchInput').addEventListener('input', (e)=>{
+  searchTerm = e.target.value.trim();
+  render();
+});
+
+/* ---------- Toast ---------- */
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 1800);
+}
+
+/* ---------- Donate button (placeholder) ---------- */
+document.getElementById('donateBtn').addEventListener('click', ()=>{
+  showToast('Yahan aapka payment link (UPI/PayPal) lagega');
+});
+
+/* ---------- Suggestion / Islah form ---------- */
+const suggestOverlay = document.getElementById('suggestOverlay');
+document.getElementById('suggestOpenBtn').addEventListener('click', ()=>{ suggestOverlay.classList.add('open'); });
+document.getElementById('suggestCloseBtn').addEventListener('click', ()=>{ suggestOverlay.classList.remove('open'); });
+
+const SUGGEST_EMAIL = 'aasansunnifatwa@gmail.com';
+document.getElementById('sendSuggestBtn').addEventListener('click', ()=>{
+  const name = document.getElementById('sg_name').value.trim();
+  const type = document.getElementById('sg_type').value;
+  const message = document.getElementById('sg_message').value.trim();
+  const contact = document.getElementById('sg_contact').value.trim();
+
+  if(!message){ showToast('Paigham likhna zaroori hai'); return; }
+
+  const subject = `Noor-e-Ashaar — ${type}${name ? ' — ' + name : ''}`;
+  const bodyLines = [
+    `Naam: ${name || '-'}`,
+    `Type: ${type}`,
+    `Contact: ${contact || '-'}`,
+    '',
+    'Paigham:',
+    message
+  ];
+  const body = bodyLines.join('\n');
+  const mailtoUrl = `mailto:${SUGGEST_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  window.location.href = mailtoUrl;
+  showToast('Mail app khul rahi hai...');
+});
+
+/* ---------- Admin Panel ---------- */
+const adminOverlay = document.getElementById('adminOverlay');
+document.getElementById('adminOpenBtn').addEventListener('click', ()=>{ adminOverlay.classList.add('open'); });
+document.getElementById('adminCloseBtn').addEventListener('click', ()=>{ adminOverlay.classList.remove('open'); });
+document.getElementById('adminLoginBtn').addEventListener('click', ()=>{
+  const val = document.getElementById('adminPass').value;
+  if(val === ADMIN_PASSWORD){
+    isAdmin = true;
+    document.getElementById('adminGate').style.display='none';
+    document.getElementById('adminPanel').style.display='block';
+    buildCategoryCheckboxes();
+    renderAdminList();
+  } else {
+    showToast('Password ghalat hai');
+  }
+});
+
+function buildCategoryCheckboxes(){
+  const box = document.getElementById('f_categories');
+  box.innerHTML = '';
+  ALL_CATS.forEach(c=>{
+    const label = document.createElement('label');
+    label.innerHTML = `<input type="checkbox" value="${c.id}"> ${catLabel(c.id,'rm')}`;
+    box.appendChild(label);
+  });
+}
+
+document.getElementById('saveShaerBtn').addEventListener('click', ()=>{
+  const urdu = document.getElementById('f_urdu').value.trim();
+  const hindi = document.getElementById('f_hindi').value.trim();
+  const roman = document.getElementById('f_roman').value.trim();
+  const shayar = document.getElementById('f_shayar').value.trim();
+  const cats = Array.from(document.querySelectorAll('#f_categories input:checked')).map(i=>i.value);
+  if(!urdu && !hindi && !roman){ showToast('Kam az kam ek script mein sher likhein'); return; }
+  if(cats.length===0){ showToast('Kam az kam ek category chunein'); return; }
+
+  if(editingId){
+    const idx = ashaarData.findIndex(i=>i.id===editingId);
+    if(idx>-1) ashaarData[idx] = {...ashaarData[idx], urdu, hindi, roman, shayar, categories:cats};
+    editingId = null;
+    document.getElementById('cancelEditBtn').style.display='none';
+    showToast('Sher update ho gaya');
+  } else {
+    ashaarData.push({id:'s'+Date.now(), urdu, hindi, roman, shayar, categories:cats});
+    showToast('Naya sher add ho gaya');
+  }
+  storage.set('noorAshaarDB', ashaarData);
+  clearForm();
+  renderAdminList();
+  render();
+});
+
+document.getElementById('cancelEditBtn').addEventListener('click', ()=>{
+  editingId = null; clearForm();
+  document.getElementById('cancelEditBtn').style.display='none';
+});
+
+function clearForm(){
+  document.getElementById('f_urdu').value='';
+  document.getElementById('f_hindi').value='';
+  document.getElementById('f_roman').value='';
+  document.getElementById('f_shayar').value='';
+  document.querySelectorAll('#f_categories input').forEach(i=>i.checked=false);
+}
+
+function renderAdminList(){
+  const list = document.getElementById('adminList');
+  list.innerHTML='';
+  document.getElementById('adminCount').textContent = ashaarData.length;
+  ashaarData.slice().reverse().forEach(item=>{
+    const row = document.createElement('div'); row.className='admin-list-item';
+    row.innerHTML = `<span>${(item.roman||item.urdu||item.hindi||'').slice(0,40)}</span>
+      <div><button class="btn-secondary" style="padding:5px 9px;font-size:0.75rem;">Edit</button>
+      <button class="btn-danger">Delete</button></div>`;
+    row.querySelector('.btn-secondary').addEventListener('click', ()=>{
+      editingId = item.id;
+      document.getElementById('f_urdu').value = item.urdu||'';
+      document.getElementById('f_hindi').value = item.hindi||'';
+      document.getElementById('f_roman').value = item.roman||'';
+      document.getElementById('f_shayar').value = item.shayar||'';
+      document.querySelectorAll('#f_categories input').forEach(i=>{ i.checked = item.categories.includes(i.value); });
+      document.getElementById('cancelEditBtn').style.display='inline-block';
+      document.getElementById('adminPanel').scrollTop = 0;
+    });
+    row.querySelector('.btn-danger').addEventListener('click', ()=>{
+      if(confirm('Ye sher delete karna hai?')){
+        ashaarData = ashaarData.filter(i=>i.id!==item.id);
+        favorites = favorites.filter(f=>f!==item.id);
+        storage.set('noorAshaarDB', ashaarData);
+        storage.set('noorFavorites', favorites);
+        renderAdminList(); render();
+      }
+    });
+    list.appendChild(row);
+  });
+}
+
+function doExport(){
+  const blob = new Blob([JSON.stringify(ashaarData, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'noor-e-ashaar-data.json'; a.click();
+  URL.revokeObjectURL(url);
+}
+document.getElementById('exportBtn').addEventListener('click', doExport);
+document.getElementById('exportBtn2').addEventListener('click', doExport);
+
+document.getElementById('importFile').addEventListener('change', (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev)=>{
+    try{
+      const data = JSON.parse(ev.target.result);
+      if(Array.isArray(data)){
+        ashaarData = data;
+        storage.set('noorAshaarDB', ashaarData);
+        renderAdminList(); render();
+        showToast('Import ho gaya');
+      }
+    }catch(err){ showToast('File sahi format mein nahi hai'); }
+  };
+  reader.readAsText(file);
+});
+
+/* ---------- Init ---------- */
+document.getElementById('year').textContent = new Date().getFullYear();
+document.getElementById('scriptToggle').querySelectorAll('button').forEach(b=>{
+  b.classList.toggle('active', b.dataset.script===currentScript);
+});
+renderChipGroup(document.getElementById('nizamatChips'), NIZAMAT_CATS);
+renderChipGroup(document.getElementById('taqreerChips'), TAQREER_CATS);
+syncChipUI();
+render();
+</script>
+</body>
+</html>
