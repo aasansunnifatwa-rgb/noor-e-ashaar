@@ -6,7 +6,7 @@
 <title>نورِ اشعار — Noor-e-Ashaar</title>
 <meta name="description" content="Islamic ashaar for nizamat, taqreer aur mehfil — Urdu, Hindi aur Roman mein.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;600;700&family=Noto+Naskh+Arabic:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Tiro+Devanagari+Hindi&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Playfair+Display:ital,wght@0,600;0,700;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --ink:#0F3D3E;
@@ -99,6 +99,21 @@
   .ornament{ display:flex; align-items:center; justify-content:center; margin:18px 0 6px; opacity:.55; }
   .ornament svg{ width:120px; height:16px; }
 
+  /* hero */
+  .hero{ text-align:center; padding:26px 20px 8px; max-width:640px; margin:0 auto; }
+  .hero-title{ font-family:'Noto Nastaliq Urdu',serif; font-size:1.7rem; color:var(--ink); margin:0 0 6px; direction:rtl; }
+  .hero-sub{ font-family:'Lora',serif; font-style:italic; color:var(--text-soft); font-size:0.92rem; margin:0 0 14px; }
+  .hero-stats{ display:flex; justify-content:center; gap:22px; font-size:0.8rem; color:var(--text-soft); }
+  .hero-stats b{ color:var(--maroon); font-size:1rem; display:block; font-family:'Inter',sans-serif; }
+
+  /* category theme banner */
+  .theme-banner{
+    margin:14px 16px 0; padding:24px 20px; border-radius:16px; text-align:center;
+    transition:background 0.5s ease; display:none;
+  }
+  .theme-banner-label{ font-size:0.68rem; letter-spacing:.14em; color:rgba(255,255,255,0.82); font-weight:700; }
+  .theme-banner-title{ font-size:1.35rem; font-weight:700; color:#fff; margin-top:4px; font-family:'Inter',sans-serif; }
+
   /* grid */
   main{ padding:6px 16px 20px; max-width:760px; margin:0 auto; }
   .count-row{ font-size:0.82rem; color:var(--text-soft); margin:10px 2px 14px; }
@@ -127,6 +142,14 @@
   .card-actions button:hover{ border-color:var(--gold); color:var(--maroon); }
   .card-actions button.fav-active{ color:var(--maroon); border-color:var(--maroon); }
   .empty-state{ text-align:center; padding:50px 20px; color:var(--text-soft); }
+
+  /* image share modal */
+  #shareCanvas{ width:100%; max-width:260px; border-radius:12px; box-shadow:var(--shadow); background:#fff; }
+  .template-preview{ display:flex; flex-direction:column; align-items:center; gap:4px; }
+  .template-swatch{ width:44px; height:44px; border-radius:8px; border:2px solid transparent; cursor:pointer; }
+  .template-swatch.active{ border-color:var(--gold); }
+  .modal-label-note{ font-size:0.78rem; color:var(--text-soft); margin:14px 0 8px; font-weight:600; }
+  .share-help-text{ font-size:0.72rem; color:var(--text-soft); margin-top:14px; line-height:1.5; }
 
   /* monetization slots */
   .ad-slot{
@@ -213,6 +236,12 @@
   </div>
 </header>
 
+<div class="hero">
+  <h2 class="hero-title">نورِ اشعار</h2>
+  <p class="hero-sub">Ashaar for Nizamat, Taqreer aur Mehfil — Urdu, Hindi aur Roman mein</p>
+  <div class="hero-stats" id="heroStats"></div>
+</div>
+
 <div class="filters">
   <div class="chip-row" id="mainChips">
     <button class="chip active" data-filter="all">Sab</button>
@@ -228,6 +257,11 @@
 
   <div class="filter-group-title">تقریر کے موضوع — Taqreer Mauzu</div>
   <div class="chip-row" id="taqreerChips"></div>
+</div>
+
+<div class="theme-banner" id="themeBanner">
+  <div class="theme-banner-label">CATEGORY</div>
+  <div class="theme-banner-title" id="themeBannerTitle"></div>
 </div>
 
 <div class="ornament">
@@ -252,6 +286,72 @@
 </footer>
 
 <div class="toast" id="toast"></div>
+
+<!-- Image Share Modal -->
+<div class="modal-overlay" id="imageShareOverlay">
+  <div class="modal" style="text-align:center;">
+    <button class="close-x" id="imageShareCloseBtn">✕</button>
+    <h2>Sher Ki Image Banayein</h2>
+
+    <p class="modal-label-note" style="margin-top:-6px;">Zaban chunein</p>
+    <div class="chip-row" id="shareLangChips" style="justify-content:center;">
+      <button class="chip" data-lang="ur">اردو</button>
+      <button class="chip" data-lang="hi">हिंदी</button>
+      <button class="chip" data-lang="rm">Roman</button>
+    </div>
+
+    <p class="modal-label-note">Font chunein</p>
+    <div class="chip-row" id="shareFontChips" style="justify-content:center;"></div>
+
+    <p class="modal-label-note">Design chunein</p>
+    <div style="display:flex;justify-content:center;gap:12px;margin-bottom:14px;flex-wrap:wrap;">
+      <div class="template-preview">
+        <div class="template-swatch active" data-template="parchment" style="background:#FBF6EC;border-color:#C9A227;"></div>
+        <span style="font-size:0.65rem;color:var(--text-soft);">Sunehra</span>
+      </div>
+      <div class="template-preview">
+        <div class="template-swatch" data-template="dark" style="background:#0B1F1D;"></div>
+        <span style="font-size:0.65rem;color:var(--text-soft);">Raat ki Roshni</span>
+      </div>
+      <div class="template-preview">
+        <div class="template-swatch" data-template="minimal" style="background:#FFFFFF;border-color:#ccc;"></div>
+        <span style="font-size:0.65rem;color:var(--text-soft);">Saada</span>
+      </div>
+      <div class="template-preview">
+        <div class="template-swatch" data-template="auto" style="background:conic-gradient(#5C1A1A,#8B6914,#0F3D2E,#0D1B3E,#7A3B4D,#5C1A1A);"></div>
+        <span style="font-size:0.65rem;color:var(--text-soft);">Mauzu Rang</span>
+      </div>
+    </div>
+
+    <div class="chip-row" id="sizeChips" style="justify-content:center;margin-bottom:14px;">
+      <button class="chip active" data-size="story">Story (9:16)</button>
+      <button class="chip" data-size="post">Post (1:1)</button>
+    </div>
+
+    <canvas id="shareCanvas"></canvas>
+
+    <div class="modal-row" style="justify-content:center;margin-top:16px;">
+      <button class="btn-primary" id="downloadImageBtn">⬇ Download</button>
+      <button class="btn-secondary" id="shareImageBtn">📤 Share</button>
+    </div>
+    <p class="share-help-text">"Share" dabane par WhatsApp, Instagram, Facebook — jo bhi app phone mein ho, uska option seedha khul jayega. Agar na khule to "Download" karke manually status/post par lagayein.</p>
+  </div>
+</div>
+
+<!-- Donate Modal -->
+<div class="modal-overlay" id="donateOverlay">
+  <div class="modal" style="text-align:center;">
+    <button class="close-x" id="donateCloseBtn">✕</button>
+    <h2>صدقہ جاریہ</h2>
+    <p style="font-size:0.85rem;color:var(--text-soft);margin-top:-6px;">Noor-e-Ashaar ko jaari rakhne mein apna saath dein — jazakAllah khair.</p>
+    <img src="qr.jpg" alt="UPI QR Code" style="width:100%;max-width:280px;border-radius:12px;margin:14px auto 6px;display:block;box-shadow:var(--shadow);">
+    <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;flex-wrap:wrap;">
+      <span style="font-family:'Inter',monospace;font-size:0.9rem;background:var(--parchment-2);padding:8px 14px;border-radius:8px;border:1px solid var(--card-border);">7984313488@ptsbi</span>
+      <button class="btn-primary" id="copyUpiBtn" style="padding:8px 14px;">⧉ Copy UPI ID</button>
+    </div>
+    <p style="font-size:0.72rem;color:var(--text-soft);margin-top:16px;">QR code scan karein ya UPI ID copy karke apni payment app (Google Pay/PhonePe/Paytm) mein paste kar dein.</p>
+  </div>
+</div>
 
 <!-- Suggestion / Islah Modal -->
 <div class="modal-overlay" id="suggestOverlay">
@@ -322,7 +422,21 @@
   </div>
 </div>
 
+<script src="nizamat-data.js"></script>
+<script src="karbala-data.js"></script>
+<script src="ahlebait-data.js"></script>
+<script src="naat-rasool-data.js"></script>
+<script src="tawheed-hamd-data.js"></script>
+<script src="milad-data.js"></script>
+<script src="sahaba-data.js"></script>
+<script src="deen-dawat-data.js"></script>
 <script>
+/* ---------- Combine all topic-wise data files into one dataset ---------- */
+const SEED_DATA = [
+  ...NIZAMAT_ASHAAR, ...KARBALA_ASHAAR, ...AHLEBAIT_ASHAAR, ...NAAT_RASOOL_ASHAAR,
+  ...TAWHEED_HAMD_ASHAAR, ...MILAD_ASHAAR, ...SAHABA_ASHAAR, ...DEEN_DAWAT_ASHAAR
+];
+
 /* ---------- Storage (localStorage with in-memory fallback) ---------- */
 const memStore = {};
 const storage = {
@@ -368,40 +482,40 @@ function catLabel(id, script){
   return c.rm;
 }
 
-/* ---------- Sample seed data ---------- */
-const SEED_DATA = [
-  {id:'s1', urdu:'آ گئے ہیں دیکھو نبیوں کے سردار، مرحبا صد مرحبا', hindi:'आ गए हैं देखो नबियों के सरदार, मरहबा सद मरहबा', roman:'Aa gaye hain dekho nabiyon ke sardar, marhaba sad marhaba', shayar:'', categories:['niz-isteqbaliya','naat']},
-  {id:'s2', urdu:'خاموش ہو جاؤ کہ ثنا کا وقت آیا، رب کی ثنا میں دل لگاؤ', hindi:'ख़ामोश हो जाओ कि सना का वक़्त आया, रब की सना में दिल लगाओ', roman:'Khamosh ho jao ke sana ka waqt aaya, Rab ki sana mein dil lagao', shayar:'', categories:['niz-sana','hamd']},
-  {id:'s3', urdu:'اٹھو کہ دستِ دعا بلند ہو، ہر آنکھ اشکبار ہو', hindi:'उठो कि दस्त-ए-दुआ बुलंद हो, हर आँख अश्कबार हो', roman:'Utho ke dast-e-dua buland ho, har aankh ashkbaar ho', shayar:'', categories:['niz-dua']},
-  {id:'s4', urdu:'اجازت دیجیے اب مجلس کو ختم کریں، دعاؤں میں یاد رکھیے گا', hindi:'इजाज़त दीजिए अब मजलिस को ख़त्म करें, दुआओं में याद रखिएगा', roman:'Ijazat dijiye ab majlis ko khatm karein, duaon mein yaad rakhiyega', shayar:'', categories:['niz-khatm']},
-  {id:'s5', urdu:'پیاسا رہ گیا دریائے فرات کے کنارے، حسینؓ کا لہو رنگ لایا', hindi:'प्यासा रह गया दरिया-ए-फ़ुरात के किनारे, हुसैन का लहू रंग लाया', roman:'Pyaasa reh gaya dariya-e-Furat ke kinare, Hussain ka lahu rang laya', shayar:'', categories:['tq-karbala','manqabat']},
-  {id:'s6', urdu:'کربلا میں دیکھا جو حسینؓ کا صبر، ہر آنکھ اشکبار ہوئی', hindi:'कर्बला में देखा जो हुसैन का सब्र, हर आँख अश्कबार हुई', roman:'Karbala mein dekha jo Hussain ka sabr, har aankh ashkbaar hui', shayar:'', categories:['tq-karbala']},
-  {id:'s7', urdu:'محمدﷺ کا نام آتے ہی دل کو قرار آتا ہے', hindi:'मुहम्मद ﷺ का नाम आते ही दिल को क़रार आता है', roman:'Muhammad ﷺ ka naam aate hi dil ko qarar aata hai', shayar:'', categories:['tq-ishqerasool','naat']},
-  {id:'s8', urdu:'وحدہٗ لا شریک ہے وہ رب، اسی کے آگے جھکتے ہیں ہم', hindi:'वहदहु ला शरीक है वो रब, उसी के आगे झुकते हैं हम', roman:'Wahdahu la shareek hai woh Rab, usi ke aage jhukte hain hum', shayar:'', categories:['tq-tawheed','hamd']},
-  {id:'s9', urdu:'اہلِ بیتؓ کی محبت ایمان کا حصہ ہے، یہ سکھایا ہمیں نبیﷺ نے', hindi:'अहल-ए-बैत की मोहब्बत ईमान का हिस्सा है, ये सिखाया हमें नबी ﷺ ने', roman:'Ahl-e-Bait ki mohabbat imaan ka hissa hai, ye sikhaya hamein Nabi ﷺ ne', shayar:'', categories:['tq-ahlebait','manqabat']},
-  {id:'s10', urdu:'ربیع الاول کی بہاریں لے کر آیا میلاد کا مہینہ', hindi:'रबी-उल-अव्वल की बहारें लेकर आया मिलाद का महीना', roman:'Rabi-ul-Awwal ki baharein lekar aaya milad ka mahina', shayar:'', categories:['tq-milad','milad']},
-  {id:'s11', urdu:'صحابہؓ کا کردار ہے ہمارے لیے مشعلِ راہ', hindi:'सहाबा का किरदार है हमारे लिए मशाल-ए-राह', roman:'Sahaba ka kirdar hai hamare liye mashal-e-raah', shayar:'', categories:['tq-sahaba']},
-  {id:'s12', urdu:'موت ہے برحق، یاد رکھو اے غافل انسان', hindi:'मौत है बरहक़, याद रखो ऐ ग़ाफ़िल इंसान', roman:'Maut hai barhaq, yaad rakho ae ghafil insan', shayar:'', categories:['tq-maut']},
-  {id:'s13', urdu:'دین کی دعوت دو، یہی ہے سنتِ انبیاء', hindi:'दीन की दावत दो, यही है सुन्नत-ए-अंबिया', roman:'Deen ki dawat do, yahi hai sunnat-e-ambiya', shayar:'', categories:['tq-dawat']},
-  {id:'s14', urdu:'مدینے کی گلیوں کی بات ہی نرالی ہے', hindi:'मदीने की गलियों की बात ही निराली है', roman:'Madine ki galiyon ki baat hi nirali hai', shayar:'', categories:['naat']},
-  {id:'s15', urdu:'اللہ کی حمد بیان کروں تو زبان تھک جائے', hindi:'अल्लाह की हम्द बयान करूँ तो ज़बान थक जाए', roman:'Allah ki hamd bayan karun to zabaan thak jaaye', shayar:'', categories:['hamd']},
-  {id:'s16', urdu:'جب تیری بات کان پڑتی ہے\nتانے بجا میں جان پڑتی ہے\nفاصلہ کچھ نہیں تیرے در تک\nزندگی درمیان پڑتی ہے', hindi:'जब तेरी बात कान पड़ती है\nताने बजा में जान पड़ती है\nफ़ासला कुछ नहीं तेरे दर तक\nज़िंदगी दरमियान पड़ती है', roman:'Jab Teri baat kan padti hai\nTane be jaa me jan padti hai\nFasla kuch nahi tere dar tak\nZindagi darmiyan padti hai.', shayar:'Pir Nasiruddin Naseer', categories:['naat','tq-ishqerasool']},
-  {id:'s17', urdu:'تیرا حسن میری نگاہ میں بخدا خدا کی کتاب ہے\nتیری بندگی تو الگ رہی تجھے دیکھنا بھی ثواب ہے', hindi:'तेरा हुस्न मेरी निगाह में बख़ुदा ख़ुदा की किताब है\nतेरी बंदगी तो अलग रही तुझे देखना भी सवाब है', roman:'Tera husn meri nigah mein b-khuda khuda ki kitab hai\nTeri bandagi to alag Rahi tujhe dekhna bhi sawab hai', shayar:'', categories:['naat']},
-  {id:'s18', urdu:'بے خبر ہو جو غلاموں سے وہ آقا کیا ہے\nبندہ مٹ جائے نہ آقا پہ وہ بندہ کیا ہے', hindi:'बे-ख़बर हो जो ग़ुलामों से वो आक़ा क्या है\nबंदा मिट जाए न आक़ा पे वो बंदा क्या है', roman:'Be khabar hojo gulamo se vo aaqa kya hai\nBanda mit jaye na aaqa pe vo Banda kya hai', shayar:'', categories:['naat']},
-  {id:'s19', urdu:'تمنائے دلِ اشرف بس اتنی ہے سرِ کوثر\nجب آقا جامِ کوثر دے لبِ اقدس لگا کر دے', hindi:'तमन्ना-ए-दिल-ए-अश्रफ़ बस इतनी है सर-ए-कौसर\nजब आक़ा जाम-ए-कौसर दे लब-ए-अक़दस लगा कर दे', roman:'Tamanna E Dil E Ashraf Bas itni Hai Sar E Kaushar\nJab Aaqa Jaam E Koushar De Lab E Aqdas Laga Kar De', shayar:'', categories:['naat','tq-ishqerasool']},
-  {id:'s20', urdu:'اونچے اونچے درباروں سے کیا لینا\nننگے بھوکے بے چاروں سے کیا لینا\nاپنا خالق اپنا مالک افضل ہے\nآتی جاتی سرکاروں سے کیا لینا', hindi:'ऊंचे ऊंचे दरबारों से क्या लेना,\nनंगे भूखे बेचारों से क्या लेना,\nअपना खालिक अपना मालिक अफजल है\nआती जाती सरकारों से क्या लेना.', roman:'Ooche ooche darbaron se kya lena,\nNange bhookhe bechaaron se kya lena,\nApna khaliq apna maalik afzal hai\nAati jaati sarkaron se kya lena.', shayar:'', categories:['hamd']},
-  {id:'s21', urdu:'نہ دولت سے، نہ دنیا سے، نہ گھر آباد کرنے سے\nتسلی دل کو ملتی ہے خدا کو یاد کرنے سے', hindi:'न दौलत से, न दुनिया से, न घर आबाद करने से,\nतसल्ली दिल को मिलती है खुदा को याद करने से.', roman:'Na daulat se, na duniya se, na ghar aabaad karne se,\nTasalli dil ko milti hai khuda ko yaad karne se.', shayar:'', categories:['hamd']},
-  {id:'s22', urdu:'میری قسمت میں بھی ایسا کوئی سجدہ کر دے\nجو میرے سارے گناہوں کا مداوا کر دے\nساری دنیا سے چھپا کر مجھے اپنا کر دے\nمیری مٹی کو خدایا تو سونا کر دے\nمیں تیرا چاہنے والا ہوں مگر ہے حسرت\nجن کو تو چاہتا ہے مجھ کو بھی ویسا کر دے\nاک نظر اپنے گنہگار پر کر مولا\nاپنی رحمت کا تو حقدار ہمیشہ کر دے', hindi:'मेरी किस्मत में भी ऐसा कोई सजदा कर दे\nजो मेरे सारे गुनाहों का मदावा कर दे.\nसारी दुनिया से छुपाकर मुझे अपना कर दे.\nमेरी मिट्टी को खुदाया तू सोना कर दे.\nमैं तेरा चाहने वाला हूं मगर है हसरत\nजिनको तू चाहता है मुझको भी वैसा कर दे.\nएक नज़र अपने गुनहगार पर कर मौला\nअपनी रहमत का तु हकदार हमेशा कर दे.', roman:'Meri kismat mein bhi aisa koi sajda kar de\nJo mere saare gunahon ka mudaawa kar de.\nSaari duniya se chhupakar mujhe apna kar de.\nMeri mitti ko khudaya tu sona kar de.\nMain tera chaahne wala hoon magar hai hasrat\nJinko tu chahta hai mujhko bhi waisa kar de.\nEk nazar apne gunahgar par kar Maula\nApni rahmat ka tu haqdar hamesha kar de.', shayar:'', categories:['hamd']},
-  {id:'s23', urdu:'آ رہی ہے آسماں سے یہ صدا تیرے لیے\nتو خدا کے واسطے ہے اور خدا تیرے لیے\nتیری ہر اک سانس پر اس کا بڑا احسان ہے\nوہ چلاتا ہے تو چلتی ہے ہوا تیرے لیے', hindi:'आ रही है आसमा से ये सदा तेरे लिए.\nतू खुदा के वास्ते हैं और खुदा तेरे लिए.\nतेरी हर एक सांस पर उसका बड़ा एहसान है.\nवो चलाता है तो चलती है हवा तेरे लिए.', roman:'Aa rahi hai aasma se ye sada tere liye.\nTu khuda ke waaste hai aur khuda tere liye.\nTeri har ek saans par uska bada ehsaan hai.\nWo chalata hai to chalti hai hawa tere liye.', shayar:'', categories:['hamd']},
-];
+/* ---------- Category color themes (mood-based, per topic) ---------- */
+const CATEGORY_THEME = {
+  'tq-karbala':      { c1:'#5C1A1A', c2:'#8B2C2C', accent:'#F0C4C4', text:'#FBEAEA' },
+  'tq-ahlebait':     { c1:'#0F3D2E', c2:'#1E5C42', accent:'#BFE6CD', text:'#EAF7EF' },
+  'manqabat':        { c1:'#0F3D2E', c2:'#1E5C42', accent:'#BFE6CD', text:'#EAF7EF' },
+  'naat':            { c1:'#8B6914', c2:'#C9A227', accent:'#FFF3D0', text:'#FFFBEF' },
+  'tq-ishqerasool':  { c1:'#8B6914', c2:'#C9A227', accent:'#FFF3D0', text:'#FFFBEF' },
+  'tq-tawheed':      { c1:'#0D1B3E', c2:'#1E3A6E', accent:'#C7D6F5', text:'#EDF2FC' },
+  'hamd':            { c1:'#0D1B3E', c2:'#1E3A6E', accent:'#C7D6F5', text:'#EDF2FC' },
+  'tq-milad':        { c1:'#7A3B4D', c2:'#B8697D', accent:'#F6D9E2', text:'#FDEEF2' },
+  'milad':           { c1:'#7A3B4D', c2:'#B8697D', accent:'#F6D9E2', text:'#FDEEF2' },
+  'tq-sahaba':       { c1:'#4A3F2A', c2:'#6B5A3D', accent:'#E9DFC8', text:'#F7F2E6' },
+  'tq-maut':         { c1:'#2E2540', c2:'#453660', accent:'#D9CFEA', text:'#F1EDF7' },
+  'tq-dawat':        { c1:'#2E2540', c2:'#453660', accent:'#D9CFEA', text:'#F1EDF7' },
+  'niz-isteqbaliya': { c1:'#0F3D3E', c2:'#144a4b', accent:'#E7D48F', text:'#FBF6EC' },
+  'niz-sana':        { c1:'#0F3D3E', c2:'#144a4b', accent:'#E7D48F', text:'#FBF6EC' },
+  'niz-dua':         { c1:'#0F3D3E', c2:'#144a4b', accent:'#E7D48F', text:'#FBF6EC' },
+  'niz-khatm':       { c1:'#0F3D3E', c2:'#144a4b', accent:'#E7D48F', text:'#FBF6EC' },
+  'niz-general':     { c1:'#0F3D3E', c2:'#144a4b', accent:'#E7D48F', text:'#FBF6EC' },
+};
+function themeForCategories(categories){
+  for(const c of categories){ if(CATEGORY_THEME[c]) return CATEGORY_THEME[c]; }
+  return null;
+}
 
 /* ---------- App state ---------- */
-const DATA_VERSION = 2; // increment this every time new ashaar are added to SEED_DATA
+const DATA_VERSION = 3; // increment this every time SEED_DATA changes structurally
+const REMOVED_SEED_IDS = ['s1','s2','s3','s4','s5','s6','s7','s8','s9','s10','s11','s12','s13','s14','s15'];
 let storedVersion = storage.get('noorDataVersion', 0);
 let ashaarData = storage.get('noorAshaarDB', null);
 if(!ashaarData){
   ashaarData = SEED_DATA;
 } else if(storedVersion < DATA_VERSION){
+  ashaarData = ashaarData.filter(i=>!REMOVED_SEED_IDS.includes(i.id));
   const existingIds = new Set(ashaarData.map(i=>i.id));
   SEED_DATA.forEach(seedItem=>{
     if(!existingIds.has(seedItem.id)) ashaarData.push(seedItem);
@@ -434,6 +548,7 @@ function toggleCatFilter(catId){
   if(activeFilters.has(catId)) activeFilters.delete(catId); else activeFilters.add(catId);
   if(activeFilters.size===0) activeFilters.add('all');
   syncChipUI();
+  updateThemeBanner();
   render();
 }
 function syncChipUI(){
@@ -442,6 +557,18 @@ function syncChipUI(){
     if(filt) chip.classList.toggle('active', activeFilters.has(filt));
     if(cat) chip.classList.toggle('active', activeFilters.has(cat));
   });
+}
+function updateThemeBanner(){
+  const banner = document.getElementById('themeBanner');
+  const catFilters = [...activeFilters].filter(f=>f!=='all' && f!=='fav');
+  if(catFilters.length===1 && CATEGORY_THEME[catFilters[0]]){
+    const th = CATEGORY_THEME[catFilters[0]];
+    banner.style.display = 'block';
+    banner.style.background = `linear-gradient(160deg, ${th.c1}, ${th.c2})`;
+    document.getElementById('themeBannerTitle').textContent = catLabel(catFilters[0], currentScript);
+  } else {
+    banner.style.display = 'none';
+  }
 }
 
 document.getElementById('mainChips').querySelectorAll('.chip').forEach(chip=>{
@@ -452,7 +579,7 @@ document.getElementById('mainChips').querySelectorAll('.chip').forEach(chip=>{
       if(activeFilters.has(cat)) activeFilters.delete(cat); else activeFilters.add(cat);
       if(activeFilters.size===0) activeFilters.add('all');
     }
-    syncChipUI(); render();
+    syncChipUI(); updateThemeBanner(); render();
   });
 });
 
@@ -500,6 +627,7 @@ function render(){
         <div class="card-actions">
           <button class="copyBtn" title="Copy">⧉</button>
           <button class="shareBtn" title="Share">📤</button>
+          <button class="imageBtn" title="Image Banayein">🖼️</button>
           <button class="favBtn ${isFav?'fav-active':''}" title="Favorite">${isFav?'★':'☆'}</button>
         </div>
       </div>`;
@@ -516,6 +644,9 @@ function render(){
         window.open(waUrl, '_blank');
       }
     });
+    card.querySelector('.imageBtn').addEventListener('click', ()=>{
+      openImageShareModal(item);
+    });
     card.querySelector('.favBtn').addEventListener('click', (e)=>{
       if(favorites.includes(item.id)) favorites = favorites.filter(f=>f!==item.id);
       else favorites.push(item.id);
@@ -524,6 +655,13 @@ function render(){
     });
     grid.appendChild(card);
   });
+  updateHeroStats();
+}
+
+function updateHeroStats(){
+  const catCount = new Set(ashaarData.flatMap(i=>i.categories)).size;
+  document.getElementById('heroStats').innerHTML =
+    `<div><b>${ashaarData.length}</b>Ashaar</div><div><b>${catCount}</b>Categories</div>`;
 }
 
 /* ---------- Script toggle ---------- */
@@ -537,6 +675,7 @@ document.getElementById('scriptToggle').querySelectorAll('button').forEach(btn=>
     renderChipGroup(document.getElementById('nizamatChips'), NIZAMAT_CATS);
     renderChipGroup(document.getElementById('taqreerChips'), TAQREER_CATS);
     syncChipUI();
+    updateThemeBanner();
     render();
   });
 });
@@ -565,9 +704,222 @@ function showToast(msg){
   setTimeout(()=>t.classList.remove('show'), 1800);
 }
 
-/* ---------- Donate button (placeholder) ---------- */
-document.getElementById('donateBtn').addEventListener('click', ()=>{
-  showToast('Yahan aapka payment link (UPI/PayPal) lagega');
+/* ---------- Image Share Generator ---------- */
+const imageShareOverlay = document.getElementById('imageShareOverlay');
+let shareItem = null;
+let shareTemplate = 'parchment';
+let shareSize = 'story';
+let shareLang = 'ur';
+let shareFont = 'nastaliq';
+
+const FONT_OPTIONS = {
+  ur: [ {id:'nastaliq', label:'Nastaliq', family:"'Noto Nastaliq Urdu'"}, {id:'naskh', label:'Naskh', family:"'Noto Naskh Arabic'"} ],
+  hi: [ {id:'devanagari', label:'Devanagari', family:"'Noto Sans Devanagari'"}, {id:'tiro', label:'Classic', family:"'Tiro Devanagari Hindi'"} ],
+  rm: [ {id:'lora', label:'Lora (Elegant)', family:"'Lora'"}, {id:'playfair', label:'Playfair (Classic)', family:"'Playfair Display'"}, {id:'inter', label:'Inter (Modern)', family:"'Inter'"} ]
+};
+
+function openImageShareModal(item){
+  shareItem = item;
+  shareLang = currentScript;
+  shareFont = FONT_OPTIONS[shareLang][0].id;
+  document.querySelectorAll('#shareLangChips .chip').forEach(c=>c.classList.toggle('active', c.dataset.lang===shareLang));
+  renderFontChips();
+  imageShareOverlay.classList.add('open');
+  if(document.fonts && document.fonts.ready){
+    document.fonts.ready.then(drawShareCanvas);
+  } else {
+    drawShareCanvas();
+  }
+}
+document.getElementById('imageShareCloseBtn').addEventListener('click', ()=>{ imageShareOverlay.classList.remove('open'); });
+
+document.querySelectorAll('#shareLangChips .chip').forEach(chip=>{
+  chip.addEventListener('click', ()=>{
+    document.querySelectorAll('#shareLangChips .chip').forEach(c=>c.classList.remove('active'));
+    chip.classList.add('active');
+    shareLang = chip.dataset.lang;
+    shareFont = FONT_OPTIONS[shareLang][0].id;
+    renderFontChips();
+    drawShareCanvas();
+  });
+});
+
+function renderFontChips(){
+  const box = document.getElementById('shareFontChips');
+  box.innerHTML = '';
+  FONT_OPTIONS[shareLang].forEach((f,i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'chip' + (f.id===shareFont ? ' active' : '');
+    btn.textContent = f.label;
+    btn.addEventListener('click', ()=>{
+      box.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+      btn.classList.add('active');
+      shareFont = f.id;
+      drawShareCanvas();
+    });
+    box.appendChild(btn);
+  });
+}
+
+document.querySelectorAll('.template-swatch').forEach(sw=>{
+  sw.addEventListener('click', ()=>{
+    document.querySelectorAll('.template-swatch').forEach(s=>s.classList.remove('active'));
+    sw.classList.add('active');
+    shareTemplate = sw.dataset.template;
+    drawShareCanvas();
+  });
+});
+document.getElementById('sizeChips').querySelectorAll('.chip').forEach(chip=>{
+  chip.addEventListener('click', ()=>{
+    document.getElementById('sizeChips').querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+    chip.classList.add('active');
+    shareSize = chip.dataset.size;
+    drawShareCanvas();
+  });
+});
+
+function wrapLines(ctx, text, maxWidth){
+  const paragraphs = text.split('\n');
+  let lines = [];
+  paragraphs.forEach(p=>{
+    const words = p.split(' ');
+    let line = '';
+    words.forEach(word=>{
+      const test = line ? line + ' ' + word : word;
+      if(ctx.measureText(test).width > maxWidth && line){
+        lines.push(line);
+        line = word;
+      } else {
+        line = test;
+      }
+    });
+    lines.push(line);
+  });
+  return lines;
+}
+
+function textForLang(item, lang){
+  if(lang==='ur') return item.urdu;
+  if(lang==='hi') return item.hindi;
+  return item.roman;
+}
+
+function drawShareCanvas(){
+  if(!shareItem) return;
+  const canvas = document.getElementById('shareCanvas');
+  const W = 1080;
+  const H = shareSize === 'story' ? 1920 : 1080;
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  const item = shareItem;
+  const isUr = shareLang === 'ur';
+  const text = textForLang(item, shareLang);
+
+  const staticThemes = {
+    parchment: { bg1:'#FBF6EC', bg2:'#FBF6EC', text:'#1B2C2B', accent:'#C9A227' },
+    dark:      { bg1:'#0B1F1D', bg2:'#0B1F1D', text:'#F3ECDB', accent:'#D9B94A' },
+    minimal:   { bg1:'#FFFFFF', bg2:'#FFFFFF', text:'#1B2C2B', accent:'#7A2E2E' }
+  };
+  let th;
+  if(shareTemplate === 'auto'){
+    const catTheme = themeForCategories(item.categories);
+    th = catTheme
+      ? { bg1:catTheme.c1, bg2:catTheme.c2, text:catTheme.text, accent:catTheme.accent }
+      : staticThemes.parchment;
+  } else {
+    th = staticThemes[shareTemplate];
+  }
+
+  const bgGrad = ctx.createLinearGradient(0,0,0,H);
+  bgGrad.addColorStop(0, th.bg1);
+  bgGrad.addColorStop(1, th.bg2);
+  ctx.fillStyle = bgGrad;
+  ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle = th.accent;
+  ctx.lineWidth = 5;
+  ctx.strokeRect(42,42,W-84,H-84);
+  ctx.lineWidth = 1.5;
+  ctx.strokeRect(60,60,W-120,H-120);
+
+  const catText = item.categories.map(c=>catLabel(c, shareLang)).join('   •   ');
+  ctx.direction = 'ltr';
+  ctx.textAlign = 'center';
+  ctx.fillStyle = th.accent;
+  ctx.font = '600 26px Inter, sans-serif';
+  ctx.fillText(catText.toUpperCase(), W/2, 160);
+
+  const fontDef = FONT_OPTIONS[shareLang].find(f=>f.id===shareFont) || FONT_OPTIONS[shareLang][0];
+  const fontFamily = fontDef.family;
+  let fontSize = isUr ? 68 : 58;
+  ctx.direction = isUr ? 'rtl' : 'ltr';
+  ctx.textAlign = 'center';
+  let lines, lineHeight;
+  do{
+    ctx.font = `${fontSize}px ${fontFamily}`;
+    lines = wrapLines(ctx, text, W - 220);
+    lineHeight = fontSize * (isUr ? 1.75 : 1.45);
+    if(lines.length * lineHeight > H * 0.6 && fontSize > 34) fontSize -= 4; else break;
+  } while(true);
+
+  const totalHeight = lines.length * lineHeight;
+  const startY = H/2 - totalHeight/2 + fontSize*0.55;
+  ctx.fillStyle = th.text;
+  lines.forEach((line,i)=>{ ctx.fillText(line, W/2, startY + i*lineHeight); });
+
+  let afterY = startY + lines.length*lineHeight + 20;
+  if(item.shayar){
+    ctx.direction = 'ltr';
+    ctx.font = 'italic 30px Lora, serif';
+    ctx.fillStyle = th.accent;
+    ctx.fillText('— ' + item.shayar, W/2, afterY + 30);
+  }
+
+  ctx.direction = 'rtl';
+  ctx.font = '700 40px "Noto Nastaliq Urdu", serif';
+  ctx.fillStyle = th.accent;
+  ctx.fillText('نورِ اشعار', W/2, H - 145);
+  ctx.direction = 'ltr';
+  ctx.font = '22px Inter, sans-serif';
+  ctx.globalAlpha = 0.75;
+  ctx.fillStyle = th.text;
+  ctx.fillText('noor-e-ashaar.netlify.app', W/2, H - 100);
+  ctx.globalAlpha = 1;
+}
+
+document.getElementById('downloadImageBtn').addEventListener('click', ()=>{
+  const canvas = document.getElementById('shareCanvas');
+  canvas.toBlob(blob=>{
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'noor-e-ashaar.png'; a.click();
+    URL.revokeObjectURL(url);
+    showToast('Image download ho gayi');
+  }, 'image/png');
+});
+
+document.getElementById('shareImageBtn').addEventListener('click', ()=>{
+  const canvas = document.getElementById('shareCanvas');
+  canvas.toBlob(async blob=>{
+    const file = new File([blob], 'noor-e-ashaar.png', { type:'image/png' });
+    if(navigator.canShare && navigator.canShare({ files:[file] })){
+      try{ await navigator.share({ files:[file], title:'Noor-e-Ashaar' }); }
+      catch(e){ /* cancelled */ }
+    } else {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'noor-e-ashaar.png'; a.click();
+      URL.revokeObjectURL(url);
+      showToast('Image download ho gayi, ab manually status/share pe lagayein');
+    }
+  }, 'image/png');
+});
+
+/* ---------- Donate Modal ---------- */
+const donateOverlay = document.getElementById('donateOverlay');
+document.getElementById('donateBtn').addEventListener('click', ()=>{ donateOverlay.classList.add('open'); });
+document.getElementById('donateCloseBtn').addEventListener('click', ()=>{ donateOverlay.classList.remove('open'); });
+document.getElementById('copyUpiBtn').addEventListener('click', ()=>{
+  navigator.clipboard.writeText('7984313488@ptsbi').then(()=>showToast('UPI ID copy ho gayi'));
 });
 
 /* ---------- Suggestion / Islah form ---------- */
@@ -732,6 +1084,7 @@ document.getElementById('scriptToggle').querySelectorAll('button').forEach(b=>{
 renderChipGroup(document.getElementById('nizamatChips'), NIZAMAT_CATS);
 renderChipGroup(document.getElementById('taqreerChips'), TAQREER_CATS);
 syncChipUI();
+updateThemeBanner();
 render();
 </script>
 </body>
